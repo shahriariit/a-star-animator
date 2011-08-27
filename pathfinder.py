@@ -449,45 +449,47 @@ def draw_entities(screen, graph):
 		if graph[c]._getEntities() == PATH:
 			pygame.draw.rect(screen, (152, 245, 255), (pos[0], pos[1], NODE_SIZE, NODE_SIZE))
 
-def reconstruct_algorithm(screen, graph, steps, last_step_time = 0, index = 0):
+def reconstruct_algorithm(screen, graph, steps, last_step_time = 0, index = 0, pause = False):
 	'''
 	Reconstruct the algorithm process.
 	'''
 
-	if pygame.time.get_ticks() - last_step_time >= RECONSTITUTION_ALGO_DELAY:
-		current_step = steps[index]
+	if pause is False:
+		if pygame.time.get_ticks() - last_step_time >= RECONSTITUTION_ALGO_DELAY:
+			current_step = steps[index]
 
-		step_type, node_c = current_step.split(':')
-		coordinates = int(node_c.split(',')[0]), int(node_c.split(',')[1])
+			step_type, node_c = current_step.split(':')
+			coordinates = int(node_c.split(',')[0]), int(node_c.split(',')[1])
 
-		if graph[coordinates]._getEntities() not in [PLAYER, TARGET]:
-			if step_type == 'choose_lowest_f_score':
-				graph[coordinates]._setEntities(LOWESTFSCORE)
+			if graph[coordinates]._getEntities() not in [PLAYER, TARGET]:
+				if step_type == 'choose_lowest_f_score':
+					graph[coordinates]._setEntities(LOWESTFSCORE)
 
-			elif step_type == 'add_to_open_list':
-				graph[coordinates]._setEntities(INOPENLIST)
+				elif step_type == 'add_to_open_list':
+					graph[coordinates]._setEntities(INOPENLIST)
 
-			elif step_type == 'add_to_closed_list':
-				graph[coordinates]._setEntities(INCLOSEDLIST)
+				elif step_type == 'add_to_closed_list':
+					graph[coordinates]._setEntities(INCLOSEDLIST)
 
-		last_step_time = pygame.time.get_ticks()
+			last_step_time = pygame.time.get_ticks()
 
-		index += 1
+			index += 1
 
 	return last_step_time, index
 
-def draw_reconstructed_path(screen, graph, path, last_step_time = 0, index = 0):
+def draw_reconstructed_path(screen, graph, path, last_step_time = 0, index = 0, pause = False):
 	'''
 	Reconstruct the path from the startpoint to the target.
 	'''
 
-	if pygame.time.get_ticks() - last_step_time >= RECONSTITUTION_PATH_DELAY:
-		if path[index]._getEntities() not in [PLAYER, TARGET]:
-			path[index]._setEntities(PATH)
+	if pause is False:
+		if pygame.time.get_ticks() - last_step_time >= RECONSTITUTION_PATH_DELAY:
+			if path[index]._getEntities() not in [PLAYER, TARGET]:
+				path[index]._setEntities(PATH)
 
-		last_step_time = pygame.time.get_ticks()
+			last_step_time = pygame.time.get_ticks()
 
-		index -= 1
+			index -= 1
 
 	return last_step_time, index
 
@@ -511,10 +513,13 @@ def pathfinder(graph_file, load_from_file):
 
 	path = None
 	algorithm_steps = None
+
 	timer_path = 0
 	timer_algo = 0
 	index_algo = 0
 	index_path = 0
+
+	pause = False
 
 	while loop:
 		clock.tick(30)
@@ -560,6 +565,14 @@ def pathfinder(graph_file, load_from_file):
 					index_algo, index_path = 0, 0
 
 					graph = init_graph(load_from_file, graph_file)
+
+				elif event.key == K_RETURN:
+					#pause the reconstitution
+					if pause is False:
+						pause = True
+		
+					else:
+						pause = False
 
 			if event.type == MOUSEBUTTONDOWN:
 				if event.button == 1:
@@ -633,11 +646,11 @@ def pathfinder(graph_file, load_from_file):
 
 		if algorithm_steps is not None:
 			if index_algo < len(algorithm_steps):
-				timer_algo, index_algo = reconstruct_algorithm(screen, graph, algorithm_steps, timer_algo, index_algo)
+				timer_algo, index_algo = reconstruct_algorithm(screen, graph, algorithm_steps, timer_algo, index_algo, pause)
 
 		if path is not None and index_algo >= len(algorithm_steps) -1:
 			if index_path >= 0:
-				timer_path, index_path = draw_reconstructed_path(screen, graph, path, timer_path, index_path)
+				timer_path, index_path = draw_reconstructed_path(screen, graph, path, timer_path, index_path, pause)
 
 		pygame.display.update()
 
