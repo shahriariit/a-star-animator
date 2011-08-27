@@ -119,6 +119,28 @@ class Node():
 			if 'bottomleft' in neighbor_coordinates: neighbor_coordinates.pop('bottomleft')
 			if 'bottomright' in neighbor_coordinates: neighbor_coordinates.pop('bottomright')
 
+
+		#do not allow all diagonal moves if the player is next to a WALL node
+		if 'top' in neighbor_coordinates:
+			if graph[neighbor_coordinates['top']]._getEntities() == WALL:
+				if 'topleft' in neighbor_coordinates: neighbor_coordinates.pop('topleft')
+				if 'topright' in neighbor_coordinates: neighbor_coordinates.pop('topright')
+
+		if 'bottom' in neighbor_coordinates:
+			if graph[neighbor_coordinates['bottom']]._getEntities() == WALL:
+				if 'bottomleft' in neighbor_coordinates: neighbor_coordinates.pop('bottomleft')
+				if 'bottomright' in neighbor_coordinates: neighbor_coordinates.pop('bottomright')
+
+		if 'right' in neighbor_coordinates:
+			if graph[neighbor_coordinates['right']]._getEntities() == WALL:
+				if 'topright' in neighbor_coordinates: neighbor_coordinates.pop('topright')
+				if 'bottomright' in neighbor_coordinates: neighbor_coordinates.pop('bottomright')
+
+		if 'left' in neighbor_coordinates:
+			if graph[neighbor_coordinates['left']]._getEntities() == WALL:
+				if 'topleft' in neighbor_coordinates: neighbor_coordinates.pop('topleft')
+				if 'bottomleft' in neighbor_coordinates: neighbor_coordinates.pop('bottomleft')
+
 		for c in neighbor_coordinates:
 			node = graph[neighbor_coordinates[c]]
 
