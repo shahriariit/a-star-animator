@@ -98,6 +98,7 @@ class Node():
 			'bottomright': (self.coordinates[0] + 1, self.coordinates[1] + 1)
 		}
 
+		#check the edges screen before adding neighbors
 		if self.coordinates[0] <= 0:
 			if 'left' in neighbor_coordinates: neighbor_coordinates.pop('left')
 			if 'topleft' in neighbor_coordinates: neighbor_coordinates.pop('topleft')
@@ -122,10 +123,8 @@ class Node():
 			node = graph[neighbor_coordinates[c]]
 
 			if node._getEntities() is not WALL and \
-			node._getList() is not CLOSEDLIST:
+			node._getList() is not CLOSEDLIST: #ignore nodes in closed list
 				neighbors.append(node)
-
-				#node._setParent(self) #set the node as the parent of his neighbor nodes
 
 				#set the movement cost between the node and his nodes
 				if c in ['top', 'bottom', 'right', 'left']:
@@ -624,10 +623,10 @@ if __name__ == '__main__':
 	parser = optparse.OptionParser('usage: %prog [options] filename')
 
 	parser.add_option('--node_size', dest = 'node_size', default = 20, type = 'int', help = 'side in pixel of the nodes (square)')
-	parser.add_option('--algorithm_reconstitution_speed', dest = 'algo_r_speed', default = 50, type = 'int',
-		help = 'the speed of the algorithm reconstitution in ms')
-	parser.add_option('--path_reconstitution_speed', dest = 'path_r_speed', default = 250, type = 'int',
-		help = 'the speed of the path reconstitution in ms')
+	parser.add_option('--algorithm_reconstitution_delay', dest = 'algo_r_delay', default = 50, type = 'int',
+		help = 'delay between each step of the algorithm reconstitution in ms')
+	parser.add_option('--path_reconstitution_delay', dest = 'path_r_delay', default = 250, type = 'int',
+		help = 'delay between each step of the path reconstitution in ms')
 
 	options, args = parser.parse_args()
 
@@ -635,8 +634,8 @@ if __name__ == '__main__':
 		parser.error('Incorrect number of arguments.')
 
 	NODE_SIZE = options.node_size
-	RECONSTITUTION_ALGO_DELAY = options.algo_r_speed
-	RECONSTITUTION_PATH_DELAY = options.path_r_speed
+	RECONSTITUTION_ALGO_DELAY = options.algo_r_delay
+	RECONSTITUTION_PATH_DELAY = options.path_r_delay
 
 	graph_file = args[0]
 
