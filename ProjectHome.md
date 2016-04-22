@@ -1,0 +1,3 @@
+This is a really simple program aimed to show the search progress executed by the A star algorithm. It's fully written in Python with Pygame. The purpose of the program is to show A star working for peoples who wants to figure out how it works.
+There is actually no interface and all the options are managed from the command line. You can set the size of the nodes and the speed of the animation (use --help for more about the available commands).
+The controls are : p + click to place the player (starting node), t + click to place the target node (node to reach) and w to place walls. You can also use s to save your graphs into a plain text file for further modifications or whatever.
